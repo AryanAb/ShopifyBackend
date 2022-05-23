@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+		<title>Shopify Backend</title>
+	</head>
+	<body>
+		<h1>Shopify Backend Challenge</h1>
+		<form>
+			<input type="text" name="name" id="add_name" placeholder="Item Name" />
+			<input type="number" name="price" id="add_price" placeholder="Item Price" />
+			<input type="submit" value="Add Item" onclick="event.preventDefault(); addItem()" />
+		</form>
+		<br />
+		<br />
+		<form>
+			<input type="text" name="name" id="search_name" placeholder="Item Name" />
+			<input type="submit" value="Search Item" onclick="event.preventDefault(); searchItem()" />
+		</form>
+		<br />
+		<br />
+		<form>
+			<input type="text" name="name" id="update_name" placeholder="Item Name" />
+			<input type="number" name="price" id="update_price" placeholder="Item Price" />
+			<input type="submit" value="Update Item" onclick="event.preventDefault(); updateItem()" />
+		</form>
+		<br />
+		<br />
+		<form>
+			<input type="text" name="name" id="delete_name" placeholder="Item Name" />
+			<input type="submit" value="Delete Item" onclick="event.preventDefault(); deleteItem()" />
+		</form>
+
+		<script>
+			function addItem() {
+				const name = document.getElementById('add_name').value;
+				const price = document.getElementById('add_price').value;
+				console.log(name);
+				console.log(price);
+				axios.post("{{ url_for('item') }}", {
+					name: name,
+					price: price
+				},
+				{
+					headers: {
+						'Content-Type': 'application/json'
+				}});
+			}
+
+			function searchItem() {
+				const name = document.getElementById('search_name').value;
+				axios.get(`{{ url_for('item') }}?name=${name}`)
+			}
+
+			function updateItem() {
+				const name = document.getElementById('update_name').value;
+				const price = document.getElementById('update_price').value;
+				axios.patch("{{ url_for('item') }}", {
+					name: name,
+					price: price
+				});
+			}
+
+			function deleteItem() {
+				console.log("deleted");
+				const name = document.getElementById('delete_name').value;
+				axios.delete(`{{ url_for('item') }}?name=${name}`);
+			}
+		</script>
+	</body>
+</html>
