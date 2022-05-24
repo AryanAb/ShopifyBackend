@@ -3,6 +3,7 @@ from flask import Flask, render_template, request
 app = Flask(__name__)
 
 inventory = {}
+bin = {}
 
 
 @app.route('/')
@@ -10,7 +11,7 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/item', methods=['POST', 'GET', 'PATCH', 'DELETE'])
+@app.route('/item', methods=['POST', 'GET', 'PATCH', 'DELETE', 'PUT'])
 def item():
     if request.method == 'POST':
         name = request.get_json()['name']
@@ -37,12 +38,22 @@ def item():
         return {"status": 200, "item": {"name": name, "price": price}}
 
     elif request.method == 'DELETE':
-        name = request.args.get('name')
+        name = request.get_json()['name']
+        comment = request.get_json()['comment']
         if name not in inventory:
             return {"status": 200, "item": {"name": name, "price": "NA"}}
 
         price = inventory.pop(name)
+        bin[name] = {"price": price, "comment": comment}
         return {"status": 200, "item": {"name": name, "price": price}}
+
+    elif request.method == 'PUT':
+        name = request.args.get('name')
+        if name not in bin:
+            return {"status": 200, "item": {"name": name, "price": "NA", "comment": "NA"}}
+
+        res = bin.pop(name)
+        return {"status": 200, "item": {"name": name, "price": res['price'], "comment": res['comment']}}
 
 
 if __name__ == '__main__':

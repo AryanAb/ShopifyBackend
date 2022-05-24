@@ -31,7 +31,14 @@
 		<br />
 		<form>
 			<input type="text" name="name" id="delete_name" placeholder="Item Name" />
+			<input type="text" name="comment" id="delete_comment" placeholder="Comment" />
 			<input type="submit" value="Delete Item" onclick="event.preventDefault(); deleteItem()" />
+		</form>
+		<br />
+		<br />
+		<form>
+			<input type="text" name="name" id="undelete_name" placeholder="Item Name" />
+			<input type="submit" value="UnDelete Item" onclick="event.preventDefault(); undeleteItem()" />
 		</form>
 
 		<script>
@@ -61,13 +68,31 @@
 				axios.patch("{{ url_for('item') }}", {
 					name: name,
 					price: price
+				}, 
+				{
+					headers: {
+						'Content-Type': 'application/json'
+					}
 				});
 			}
 
 			function deleteItem() {
-				console.log("deleted");
 				const name = document.getElementById('delete_name').value;
-				axios.delete(`{{ url_for('item') }}?name=${name}`);
+				const comment = document.getElementById('delete_comment').value;
+				axios.delete("{{ url_for('item') }}", {
+					name: name,
+					comment: comment
+				},
+				{
+					headers: {
+						'Content-Type': 'application/json'
+					}
+				});
+			}
+
+			function undeleteItem() {
+				const name = document.getElementById('undelete_name').value;
+				axios.put(`{{ url_for('item') }}?name=${name}`);
 			}
 		</script>
 	</body>
